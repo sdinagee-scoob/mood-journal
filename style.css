@@ -78,3 +78,7 @@ textarea {
     background: #246e45;
     transform: translateY(-2px);
 }
+
+#quote-box {
+    white-space: pre-wrap;
+}
