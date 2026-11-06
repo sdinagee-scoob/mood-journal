@@ -19,8 +19,11 @@ buttons.forEach(button => {
         // Update the text box with the matching quote
         quoteBox.textContent = moodQuotes[selectedMood];
         
-        // Add a small visual cue to show which button is active
-        buttons.forEach(b => b.style.backgroundColor = '#4a6fa5'); // Reset all
-        button.style.backgroundColor = '#2e8b57'; // Highlight clicked
+        
+        // Reset all buttons back to the blue gradient
+        buttons.forEach(b => b.style.background = 'linear-gradient(135deg, #00c6ff, #0072ff)'); 
+        
+        // Highlight the clicked button in solid green
+        button.style.background = '#2e8b57';
     });
 });
