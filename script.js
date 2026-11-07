@@ -8,11 +8,13 @@ if (!apiKey) {
         localStorage.setItem('gemini_api_key', apiKey);
     }
 }
+
 const mainContainer = document.querySelector('.container');
 const fullscreenView = document.getElementById('fullscreen-view');
 const fullscreenPoem = document.getElementById('fullscreen-poem');
 const closeBtn = document.getElementById('close-btn');
 const nextBtn = document.getElementById('next-btn');
+const buttons = document.querySelectorAll('.mood-buttons button');
 let currentMood = ''; // Remembers which tab you clicked
 
 async function fetchPoem(mood) {
@@ -42,7 +44,7 @@ async function fetchPoem(mood) {
             const lineElement = document.createElement('span');
             lineElement.textContent = line;
             lineElement.className = 'dramatic-line';
-            lineElement.style.animationDelay = `${index * 1.2}s`; 
+            lineElement.style.animationDelay = `${index * 1.2}s`; // Fixed the missing asterisk here
             fullscreenPoem.appendChild(lineElement);
         });
 
@@ -68,43 +70,8 @@ nextBtn.addEventListener('click', () => {
     fetchPoem(currentMood);
 });
 
-
-// Find all the mood buttons and the text box on the page
-const buttons = document.querySelectorAll('.mood-buttons button');
-const quoteBox = document.getElementById('quote-box');
-
-// Give each button instructions on what to do when clicked
-buttons.forEach(button => {
-    button.addEventListener('click', () => {
-        const selectedMood = button.textContent;
-        
-        // 1. Get the poem and split it at every "Enter" key press (\n)
-        const poemLines = moodQuotes[selectedMood].split('\n');
-        
-        // 2. Empty the box completely before adding the new poem
-        fullscreenPoem.innerHTML = ''; 
-        
-        // 3. Build the poem line by line with a delay
-        poemLines.forEach((line, index) => {
-            const lineElement = document.createElement('span');
-            lineElement.textContent = line;
-            lineElement.className = 'dramatic-line';
-            
-            // Delays each line by an additional 1.2 seconds 
-            lineElement.style.animationDelay = `${index * 1.2}s`; 
-            
-            fullscreenPoem.appendChild(lineElement);
-        });
-        
-        // Hide the main dashboard and show the full-screen poem
-        mainContainer.style.display = 'none';
-        fullscreenView.style.display = 'flex';
-    });
-});
-
 // Add instructions for the "Go Back" button
 closeBtn.addEventListener('click', () => {
     fullscreenView.style.display = 'none';
     mainContainer.style.display = 'flex';
 });
- 
