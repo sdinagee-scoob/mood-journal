@@ -52,7 +52,7 @@ buttons.forEach(button => {
         const selectedMood = button.textContent;
         
         // Update the text box with the matching quote
-        quoteBox.textContent = moodQuotes[selectedMood].replace(/\n/g, '<br>');
+        quoteBox.innerHTML = moodQuotes[selectedMood].replace(/\n/g, '<br>');
         
         
         // Reset all buttons back to the blue gradient
