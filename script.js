@@ -1,3 +1,9 @@
+const mainContainer = document.querySelector('.container');
+const fullscreenView = document.getElementById('fullscreen-view');
+const fullscreenPoem = document.getElementById('fullscreen-poem');
+const closeBtn = document.getElementById('close-btn');
+
+
 // A dictionary storing our placeholder quotes for each mood
 const moodQuotes = {
     "Happy": `The sun is loud, the shadows flee,
@@ -48,17 +54,20 @@ const quoteBox = document.getElementById('quote-box');
 // Give each button instructions on what to do when clicked
 buttons.forEach(button => {
     button.addEventListener('click', () => {
-        // Find out which mood is written on the button
         const selectedMood = button.textContent;
         
-        // Update the text box with the matching quote
-        quoteBox.textContent = moodQuotes[selectedMood];
+        // Put the poem into the new full-screen box
+        fullscreenPoem.textContent = moodQuotes[selectedMood];
         
-        
-        // Reset all buttons back to the blue gradient
-        buttons.forEach(b => b.style.background = 'linear-gradient(135deg, #00c6ff, #0072ff)'); 
-        
-        // Highlight the clicked button in solid green
-        button.style.background = '#2e8b57';
+        // Hide the main dashboard and show the full-screen poem
+        mainContainer.style.display = 'none';
+        fullscreenView.style.display = 'flex';
     });
 });
+
+// Add instructions for the "Go Back" button
+closeBtn.addEventListener('click', () => {
+    fullscreenView.style.display = 'none';
+    mainContainer.style.display = 'flex';
+});
+ 
