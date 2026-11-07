@@ -1,51 +1,73 @@
+// Check the browser's memory for the key first
+let apiKey = localStorage.getItem('gemini_api_key');
+
+// If the key isn't saved yet, ask for it securely via a browser popup
+if (!apiKey) {
+    apiKey = prompt("Please enter your Gemini API Key to enable AI poetry:");
+    if (apiKey) {
+        localStorage.setItem('gemini_api_key', apiKey);
+    }
+}
 const mainContainer = document.querySelector('.container');
 const fullscreenView = document.getElementById('fullscreen-view');
 const fullscreenPoem = document.getElementById('fullscreen-poem');
 const closeBtn = document.getElementById('close-btn');
+const nextBtn = document.getElementById('next-btn');
+let currentMood = ''; // Remembers which tab you clicked
 
+async function fetchPoem(mood) {
+    // Show loading state and hide the "Another" button
+    fullscreenPoem.innerHTML = '<span class="dramatic-line">Consulting the muses...</span>';
+    nextBtn.style.display = 'none'; 
 
-// A dictionary storing our placeholder quotes for each mood
-const moodQuotes = {
-    "Happy": `The sun is loud, the shadows flee,
-A quiet joy awakes in me.
-No heavy thoughts, no ticking clock,
-Just blooming flowers on the block.`,
+    // The prompt that instructs the AI
+    const prompt = `Write a short, dramatic 4-line poem about feeling ${mood}. Do not include a title or any extra text.`;
 
-    "Romantic": `I did not know the sky was wide,
-Until you came to walk beside.
-A thousand words I cannot say,
-Are in the way you look my way.`,
+    try {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                contents: [{ parts: [{ text: prompt }] }]
+            })
+        });
 
-    "Yearning": `The clock moves slow, the room is still,
-I look out past the windowsill.
-A quiet ache, a distant space,
-Between my hands and your familiar face.`,
+        const data = await response.json();
+        const aiPoem = data.candidates[0].content.parts[0].text.trim();
 
-    "Grief": `The world spins on, it does not wait,
-While I stand frozen at the gate.
-A heavy stone I learn to bear,
-For love is what is resting there.`,
+        // Apply your line-by-line dramatic animation
+        const poemLines = aiPoem.split('\n');
+        fullscreenPoem.innerHTML = ''; 
+        poemLines.forEach((line, index) => {
+            const lineElement = document.createElement('span');
+            lineElement.textContent = line;
+            lineElement.className = 'dramatic-line';
+            lineElement.style.animationDelay = `${index * 1.2}s`; 
+            fullscreenPoem.appendChild(lineElement);
+        });
 
-    "Anger": `A sudden spark, a rising tide,
-A roaring fire I cannot hide.
-Let it burn the dry wood bare,
-To clear the smoke and breathe the air.`,
+        // Show the "Generate Another" button once finished
+        nextBtn.style.display = 'block'; 
 
-    "Uncertain": `The fog rolls in, the path is blurred,
-I wait in silence for a word.
-But even in the fading light,
-A single star can guide the night.`,
+    } catch (error) {
+        fullscreenPoem.innerHTML = '<span class="dramatic-line">The connection broke. Please try again.</span>';
+    }
+}
 
-    "Hopeful": `The longest storm must always end,
-The sharpest broken branches mend.
-Look to the east, the light is new,
-The morning sun is breaking through.`,
+buttons.forEach(button => {
+    button.addEventListener('click', () => {
+        currentMood = button.textContent;
+        mainContainer.style.display = 'none';
+        fullscreenView.style.display = 'flex';
+        fetchPoem(currentMood); // Calls the AI function
+    });
+});
 
-    "Healing": `The edges fray, the colors bleed,
-But rain is what the rivers need.
-The deepest wounds begin to close,
-And from the dirt, a new seed grows.`
-};
+// Instructs the new button to fetch a different poem for the same mood
+nextBtn.addEventListener('click', () => {
+    fetchPoem(currentMood);
+});
+
 
 // Find all the mood buttons and the text box on the page
 const buttons = document.querySelectorAll('.mood-buttons button');
