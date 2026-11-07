@@ -119,3 +119,16 @@ textarea {
     font-size: 1.1rem;
     z-index: 1001; /* Ensures the button stays clickable above the box */
 }
+.dramatic-line {
+    display: block; /* Ensures each line gets its own row */
+    opacity: 0; /* Starts completely invisible */
+    transform: translateY(15px); /* Starts slightly lower on the screen */
+    animation: fadeUp 1.5s forwards ease-out;
+}
+
+@keyframes fadeUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

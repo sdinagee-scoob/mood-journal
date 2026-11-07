@@ -56,8 +56,23 @@ buttons.forEach(button => {
     button.addEventListener('click', () => {
         const selectedMood = button.textContent;
         
-        // Put the poem into the new full-screen box
-        fullscreenPoem.textContent = moodQuotes[selectedMood];
+        // 1. Get the poem and split it at every "Enter" key press (\n)
+        const poemLines = moodQuotes[selectedMood].split('\n');
+        
+        // 2. Empty the box completely before adding the new poem
+        fullscreenPoem.innerHTML = ''; 
+        
+        // 3. Build the poem line by line with a delay
+        poemLines.forEach((line, index) => {
+            const lineElement = document.createElement('span');
+            lineElement.textContent = line;
+            lineElement.className = 'dramatic-line';
+            
+            // Delays each line by an additional 1.2 seconds 
+            lineElement.style.animationDelay = `${index * 1.2}s`; 
+            
+            fullscreenPoem.appendChild(lineElement);
+        });
         
         // Hide the main dashboard and show the full-screen poem
         mainContainer.style.display = 'none';
