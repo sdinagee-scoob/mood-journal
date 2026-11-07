@@ -85,3 +85,37 @@ textarea {
 #quote-box {
     white-space: pre-wrap;
 }
+.fullscreen-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: transparent; /* Lets your floral background show through */
+    z-index: 1000;
+    display: flex;
+    align-items: center; /* Centers the box vertically */
+    justify-content: flex-start; /* Pushes the box to the left */
+    padding-left: 5%; /* Adds a little breathing room from the left edge */
+}
+
+.fullscreen-text {
+    background-color: rgba(255, 255, 255, 0.95); /* Creates the solid white box */
+    font-size: 1.8rem;
+    font-style: italic;
+    line-height: 1.8;
+    color: #333;
+    max-width: 40%; /* Keeps the box on the left half of the screen */
+    padding: 3rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15); /* Adds a soft drop shadow */
+    white-space: pre-wrap; /* Forces the browser to respect your line breaks */
+}
+
+.close-btn {
+    position: absolute;
+    top: 2rem;
+    left: 2rem;
+    font-size: 1.1rem;
+    z-index: 1001; /* Ensures the button stays clickable above the box */
+}
