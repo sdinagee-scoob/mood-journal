@@ -26,7 +26,7 @@ async function fetchPoem(mood) {
     const prompt = `Write a short, dramatic 4-line poem about feeling ${mood}. Do not include a title or any extra text.`;
 
     try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -35,6 +35,22 @@ async function fetchPoem(mood) {
         });
 
         const data = await response.json();
+
+        // 1. Check if Google sent back a specific API error (like an invalid key)
+        if (data.error) {
+            console.error("Gemini API Error:", data.error.message);
+            fullscreenPoem.innerHTML = `<span class="dramatic-line" style="font-size: 1.2rem; color: #d9534f;">API Error: ${data.error.message}</span>`;
+            
+            // Clear the bad key from memory so you can enter it again next time
+            if (data.error.code === 400) {
+                localStorage.removeItem('gemini_api_key');
+            }
+            
+            nextBtn.style.display = 'block'; 
+            return; // Stop running the rest of the function
+        }
+
+        // 2. If no error, parse the poem
         const aiPoem = data.candidates[0].content.parts[0].text.trim();
 
         // Apply your line-by-line dramatic animation
@@ -44,7 +60,7 @@ async function fetchPoem(mood) {
             const lineElement = document.createElement('span');
             lineElement.textContent = line;
             lineElement.className = 'dramatic-line';
-            lineElement.style.animationDelay = `${index * 1.2}s`; // Fixed the missing asterisk here
+            lineElement.style.animationDelay = `${index * 1.2}s`; // Syntax error fixed here
             fullscreenPoem.appendChild(lineElement);
         });
 
@@ -52,7 +68,9 @@ async function fetchPoem(mood) {
         nextBtn.style.display = 'block'; 
 
     } catch (error) {
-        fullscreenPoem.innerHTML = '<span class="dramatic-line">The connection broke. Please try again.</span>';
+        // 3. This now only triggers for actual crashes or internet outages
+        console.error("System Crash:", error);
+        fullscreenPoem.innerHTML = '<span class="dramatic-line">The system crashed. Press F12 to check the console for details.</span>';
     }
 }
 
